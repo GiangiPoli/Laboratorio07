@@ -76,11 +76,7 @@ public final class Transformers {
      * @return A flattened list with the elements of each collection in the input
      */
     public static <I> List<? extends I> flatten(final Iterable<? extends Collection<? extends I>> base) {
-        List<I> result = new ArrayList<>();
-        for (Collection<? extends I> coll : base) {
-            result.addAll(coll);
-        }
-        return result;
+        return flattenTransform(base, Function.identity());
     }
 
     /**
@@ -119,12 +115,11 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> reject(final Iterable<I> base, final Function<I, Boolean> test) {
-        List<I> result = new ArrayList<>();
-        for (I value : base) {
-            if(!test.call(value)) {
-                result.add(value);
+        return select(base, new Function<I,Boolean>() {
+            @Override
+            public Boolean call(I value) {
+                return !test.call(value);
             }
-        }
-        return result;
+        });
     }
 }
